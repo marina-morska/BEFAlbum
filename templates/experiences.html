@@ -1,0 +1,16 @@
+<h1>Experiences</h1>
+
+{% for experience in experiences %}
+    <h2>{{ experience.title }}</h2>
+    {% if experience.image %}
+        <img src="{{ experience.image.url }}" alt="{{ experience.title }}" style="max-width: 300px; height: auto;">
+    {% endif %}
+    <p>{{ experience.description }}</p>
+    <p>{{ experience.star_display }}</p>
+    <p>{{ experience.get_category_display }}</p>
+    <form method="post"
+          action="{% url 'experiences:collect_experience' pk=experience.pk %}">
+        {% csrf_token %}
+        <button type="submit">Collect experience</button>
+    </form>
+{% endfor %}

@@ -1,0 +1,9 @@
+<h1>Create your Album</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form }}
+
+    <button type="submit">Create Album</button>
+</form>

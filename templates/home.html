@@ -1,0 +1,18 @@
+<h1>Eurovision 2027 Burgas</h1>
+
+{% if album %}
+    <h2>Welcome, {{ album.nickname }}!</h2>
+    <p>Your Album is ready!</p>
+    <a href="{% url 'album_details' pk=album.pk %}">View my album</a>
+    <p>
+        <a href="{% url 'experiences:experiences' %}">Explore & collect experiences</a>
+    </p>
+    <p>
+        <a href="{% url 'experiences:create_personal_experience' %}">Create your personal experience</a>
+    </p>
+{% else %}
+    <h2>Create your eurovision fan album</h2>
+    <p>Create your Album to start collecting experiences in Burgas!</p>
+    <a href="{% url 'create_album' %}">Create my album</a> 
+    
+{% endif %}

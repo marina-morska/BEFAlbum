@@ -1,0 +1,10 @@
+<h1>Create a personal experience</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %} 
+    {{ form.as_p }}
+    <button type="submit">Save your experience</button>
+</form>
+<p>
+    <a href="{% url 'experiences:experiences' %}">Back to Experiences</a>
+</p>
