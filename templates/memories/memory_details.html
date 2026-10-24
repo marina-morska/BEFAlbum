@@ -1,0 +1,14 @@
+<h1>My memory</h1>
+
+<p><strong>Experience:</strong> {{ memory.experience.title }}</p>
+
+<p><strong>My memory:</strong></p>
+<p>{{ memory.note }}</p>
+
+<p><strong>Created at:</strong> {{ memory.created_at }}</p>
+
+<a href="{% url 'memory_edit' memory.pk %}">Edit memory</a>
+
+<a href="{% url 'memory_delete' memory.pk %}">Delete memory</a>
+
+<a href="{% url 'experiences:experiences' %}">Back to experiences</a>

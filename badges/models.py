@@ -3,8 +3,8 @@ from django.db import models
 class Badge(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.TextField()
-    image = models.CharField(max_length=100)
-    stars_required = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='badges')
+    stars_required = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.name} ({self.stars_required}⭐ required)"

@@ -1,8 +1,7 @@
 from typing import Any
 
 from django import forms
-from albums.models import Album
-
+from albums.models import Album, Memory
 
 
 class CreateAlbumForm(forms.ModelForm):
@@ -60,3 +59,17 @@ class EditAlbumForm(CreateAlbumForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['collected_stars'].disabled = True
+
+
+class MemoryForm(forms.ModelForm):
+    class Meta:
+        model = Memory
+        fields = ['note']
+        labels = {
+            'note': 'Your memory note'
+        }
+        widgets = {
+            'note': forms.Textarea(attrs={
+                'placeholder': 'Write a memory ...',
+            })
+        }

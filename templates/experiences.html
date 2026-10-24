@@ -1,16 +1,69 @@
 <h1>Experiences</h1>
 
+<!-- Just for testing: remove this condition when finished -->
+{% if album %}
+    <p>
+        Viewing as fan: <strong>{{ album.nickname }}</strong>
+        ({{ album.country }}) |
+        <a href="{% url 'logout_album' %}">Switch Album</a>
+    </p>
+{% else %}
+    <p>
+        <em>No active album selected.</em>
+        <a href="{% url 'home' %}">Go to Home</a> to create or select one.
+    </p>
+{% endif %}
+
 {% for experience in experiences %}
     <h2>{{ experience.title }}</h2>
+
     {% if experience.image %}
-        <img src="{{ experience.image.url }}" alt="{{ experience.title }}" style="max-width: 300px; height: auto;">
+        <img src="{{ experience.image.url }}"
+             alt="{{ experience.title }}"
+             style="max-width: 300px; height: auto;">
     {% endif %}
+
     <p>{{ experience.description }}</p>
     <p>{{ experience.star_display }}</p>
     <p>{{ experience.get_category_display }}</p>
-    <form method="post"
-          action="{% url 'experiences:collect_experience' pk=experience.pk %}">
-        {% csrf_token %}
-        <button type="submit">Collect experience</button>
-    </form>
+
+    {% if album %}
+        {% if experience.id in collected_ids %}
+            <p>✅ <em>Collected!</em></p>
+
+            {% if experience.id in memories %}
+                {% for memory in album.memories.all %}
+                    {% if memory.experience_id == experience.id %}
+                        <p><strong>My memory:</strong></p>
+                        <p>{{ memory.note }}</p>
+                        <a href="{% url 'memory_details' memory.pk %}">View details</a>
+                        <a href="{% url 'memory_edit' memory.pk %}">Edit memory</a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <a href="{% url 'create_memory' experience_pk=experience.pk %}">
+                    Write a memory
+                </a>
+            {% endif %}
+
+        {% else %}
+            <form method="post"
+                  action="{% url 'experiences:collect_experience' pk=experience.pk %}">
+                {% csrf_token %}
+                <button type="submit">Collect experience</button>
+            </form>
+        {% endif %}
+    {% endif %}
 {% endfor %}
+
+<p>
+    <a href="{% url 'home' %}">Back to Home</a>
+</p>
+{% if album %}
+    <p>
+        <a href="{% url 'album_details' pk=album.pk %}">
+            Back to my Album
+        </a>
+    </p>
+{% endif %}
+

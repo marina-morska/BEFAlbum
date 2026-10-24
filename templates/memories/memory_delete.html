@@ -1,0 +1,11 @@
+<h1>Delete my memory</h1>
+
+<p>Are you sure you want to delete the memory "{{ memory.experience.title }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">Yes, delete the memory</button>
+</form>
+
+<a href="{% url 'memory_details' memory.pk %}">Cancel</a>

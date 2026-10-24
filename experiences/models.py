@@ -19,6 +19,10 @@ class Experience(models.Model):
         'Culinary': 1,
         'Personal': 4,
     }
+
+    PREDEFINED_EXPERIENCES_PER_CATEGORY = 5
+    MAX_PERSONAL_EXPERIENCES = 5
+
     title = models.CharField(max_length=50)
     description = models.TextField()
     image = models.ImageField(

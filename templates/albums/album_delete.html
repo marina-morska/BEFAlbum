@@ -1,0 +1,10 @@
+<h1>Delete Album</h1>
+
+<p>Are you sure you want to delete the album "{{ album.nickname }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete my album</button>
+</form>
+
+<a href="{% url 'album_details' album.pk %}">Cancel</a>

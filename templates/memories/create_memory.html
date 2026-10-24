@@ -1,0 +1,13 @@
+<h1>Write your memory</h1>
+
+<p>Record your experience.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Save Memory</button>
+</form>
+
+<a href="{% url 'experiences:experiences' %}">Back to experiences</a>
+

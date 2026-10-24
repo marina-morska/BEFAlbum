@@ -1,8 +1,8 @@
 <h1>Eurovision 2027 Burgas</h1>
 
 {% if album %}
-    <h2>Welcome, {{ album.nickname }}!</h2>
-    <p>Your Album is ready!</p>
+    <h2>Welcome, {{ album.nickname }} from {{ album.country }}!</h2>
+    <p>Your Album is ready!  Stars: {{ album.collected_stars }} ⭐</p>
     <a href="{% url 'album_details' pk=album.pk %}">View my album</a>
     <p>
         <a href="{% url 'experiences:experiences' %}">Explore & collect experiences</a>
@@ -10,9 +10,29 @@
     <p>
         <a href="{% url 'experiences:create_personal_experience' %}">Create your personal experience</a>
     </p>
+<!-- just for testing -->
+    <hr>
+    <p>
+        <a href="{% url 'logout_album' %}"> Switch Album / Log Out</a>
+    </p>
 {% else %}
     <h2>Create your eurovision fan album</h2>
     <p>Create your Album to start collecting experiences in Burgas!</p>
-    <a href="{% url 'create_album' %}">Create my album</a> 
-    
+    <p>
+        <a href="{% url 'create_album' %}">➕ Create my album</a>
+    </p>
+<!-- Just for testing, delete if statement when not needed-->
+    {% if all_albums %}
+        <hr>
+        <h3>Or select an existing fan album:</h3>
+        <ul>
+            {% for existing in all_albums %}
+                <li>
+                    <strong>{{ existing.nickname }}</strong> ({{ existing.country }}) - {{ existing.collected_stars }}⭐
+                    &nbsp;
+                    <a href="{% url 'select_album' pk=existing.pk %}">[Select this album]</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endif %}

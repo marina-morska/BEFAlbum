@@ -1,0 +1,57 @@
+<h1>{{ album.nickname }}'s album</h1>
+<p>Home country: {{ album.country }}</p>
+<p>Total collected stars: {{ album.collected_stars }} ⭐</p>
+
+<hr>
+
+<h2>My badges</h2>
+
+{% if earned_badges %}
+    <ul>
+        {% for earned_badge in earned_badges %}
+            <li>
+                {% if earned_badge.badge.image %}
+                    <img
+                        src="{{ earned_badge.badge.image.url }}"
+                        alt="{{ earned_badge.badge.name }}"
+                        width="100"
+                    >
+                {% endif %}
+
+                <h3>{{ earned_badge.badge.name }}</h3>
+                <p>{{ earned_badge.badge.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No badges earned yet. Keep exploring!</p>
+{% endif %}
+
+<hr>
+
+<h2>My collected experiences</h2>
+
+{% for group in category_groups %}
+    <h3>{{ group.label }}</h3>
+
+    {% if group.experiences %}
+        <ul>
+            {% for experience in group.experiences %}
+                <li>
+                    <strong>{{ experience.title }}</strong>
+                    — {{ experience.star_display }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No experiences collected in this category yet.</p>
+    {% endif %}
+
+    <hr>
+{% endfor %}
+<div>
+    <a href="{% url 'album_edit' %}"> Edit Album</a>
+    |
+    <a href="{% url 'album_delete' %}"> Delete Album</a>
+</div>
+<a href="{% url 'home' %}">Back to Home</a>

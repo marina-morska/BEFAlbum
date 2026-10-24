@@ -1,0 +1,12 @@
+<h1>Edit Your Album</h1>
+
+<p>Update your album details below.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<a href="{% url 'album_details' album.pk %}">Cancel</a>

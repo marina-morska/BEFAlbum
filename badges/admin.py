@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from badges.models import Badge, AlbumBadge
+
+
+admin.site.register(Badge)
+admin.site.register(AlbumBadge)

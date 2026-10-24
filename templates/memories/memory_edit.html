@@ -1,0 +1,12 @@
+<h1>Edit my memory</h1>
+
+<p>Update your memory below.</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Save changes</button>
+</form>
+
+<a href="{% url 'memory_details' memory.pk %}">Cancel</a>
