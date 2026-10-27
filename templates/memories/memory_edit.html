@@ -1,12 +1,32 @@
-<h1>Edit my memory</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<p>Update your memory below.</p>
+{% block title %}Edit Memory | Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/memory-pages.css' %}">{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block content %}
+  <section class="story-hero" aria-labelledby="memory-title">
+    <p class="eyebrow">Your album · Memory</p>
+    <h1 id="memory-title">Edit your memory.</h1>
+    <p class="hero-copy">Update the note you saved for <strong>{{ memory.experience.title }}</strong>.</p>
+  </section>
 
-    <button type="submit">Save changes</button>
-</form>
-
-<a href="{% url 'memory_details' memory.pk %}">Cancel</a>
+  <section class="story-panel form-panel">
+    <div class="story-panel-heading">
+      <span class="form-step">Experience</span>
+      <h2>{{ memory.experience.title }}</h2>
+      <p>Keep the details you want to remember.</p>
+    </div>
+    <form class="story-form" method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}
+        {% include 'partials/form_field.html' with field=field only %}
+      {% endfor %}
+      <div class="story-actions">
+        <button class="primary-button" type="submit">Save changes <span aria-hidden="true">→</span></button>
+        <a class="text-link" href="{% url 'memory_details' memory.pk %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

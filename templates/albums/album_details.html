@@ -1,57 +1,166 @@
-<h1>{{ album.nickname }}'s album</h1>
-<p>Home country: {{ album.country }}</p>
-<p>Total collected stars: {{ album.collected_stars }} ⭐</p>
+{% extends 'base.html' %}
+{% load static %}
 
-<hr>
+{% block title %}{{ album.nickname }}’s Album | Burgas Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/album-details.css' %}?v=2">{% endblock %}
 
-<h2>My badges</h2>
+{% block content %}
+  <section class="album-hero">
+    <div class="album-hero-content">
+      <p class="eyebrow">Your Eurovision journey</p>
+      <h1>{{ album.nickname }}’s album</h1>
+      <div class="album-hero-meta">
+        <div class="album-meta-item">
+          <small>Home country</small>
+          <strong>{{ album.country }}</strong>
+        </div>
+        <div class="album-meta-item">
+          <small>Stars collected</small>
+          <strong>{{ album.collected_stars }} ⭐</strong>
+        </div>
+        <div class="album-meta-item">
+          <small>Experiences collected</small>
+          <strong>{{ collected_total }}/{{ required_total }}</strong>
+        </div>
+      </div>
+    </div>
+    <div class="album-hero-actions">
+      <a class="primary-button" href="{% url 'experiences:experiences' %}">Explore experiences →</a>
+      <a class="secondary-button" href="{% url 'album_edit' %}">Edit album</a>
+      <a class="secondary-button album-delete-link" href="{% url 'album_delete' %}">Delete album</a>
+    </div>
+  </section>
 
-{% if earned_badges %}
-    <ul>
-        {% for earned_badge in earned_badges %}
-            <li>
-                {% if earned_badge.badge.image %}
-                    <img
-                        src="{{ earned_badge.badge.image.url }}"
-                        alt="{{ earned_badge.badge.name }}"
-                        width="100"
-                    >
-                {% endif %}
+  <section class="panel album-badges">
+    <div class="panel-heading">
+      <h2>Earned badges</h2>
+      <span>{{ earned_badges|length }} earned</span>
+    </div>
 
-                <h3>{{ earned_badge.badge.name }}</h3>
-                <p>{{ earned_badge.badge.description }}</p>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No badges earned yet. Keep exploring!</p>
-{% endif %}
-
-<hr>
-
-<h2>My collected experiences</h2>
-
-{% for group in category_groups %}
-    <h3>{{ group.label }}</h3>
-
-    {% if group.experiences %}
-        <ul>
-            {% for experience in group.experiences %}
-                <li>
-                    <strong>{{ experience.title }}</strong>
-                    — {{ experience.star_display }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No experiences collected in this category yet.</p>
+    {% if category_badges %}
+      <div class="badge-group">
+        <h3>Category and experience badges</h3>
+        <div class="badge-row">
+          {% for earned_badge in category_badges %}
+            <article class="badge-row-card">
+              {% if earned_badge.badge.image %}
+                <img src="{{ earned_badge.badge.image.url }}" alt="{{ earned_badge.badge.name }}">
+              {% else %}
+                <span class="badge-row-icon" aria-hidden="true">✦</span>
+              {% endif %}
+              <strong>{{ earned_badge.badge.name }}</strong>
+              <small>{{ earned_badge.badge.description }}</small>
+              <span class="badge-earned-stamp">Earned</span>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
     {% endif %}
 
-    <hr>
-{% endfor %}
-<div>
-    <a href="{% url 'album_edit' %}"> Edit Album</a>
-    |
-    <a href="{% url 'album_delete' %}"> Delete Album</a>
-</div>
-<a href="{% url 'home' %}">Back to Home</a>
+    {% if star_badges %}
+      <div class="badge-group">
+        <h3>Star badges</h3>
+        <div class="badge-row">
+          {% for earned_badge in star_badges %}
+            <article class="badge-row-card">
+              {% if earned_badge.badge.image %}
+                <img src="{{ earned_badge.badge.image.url }}" alt="{{ earned_badge.badge.name }}">
+              {% else %}
+                <span class="badge-row-icon" aria-hidden="true">⭐</span>
+              {% endif %}
+              <strong>{{ earned_badge.badge.name }}</strong>
+              <small>{{ earned_badge.badge.description }}</small>
+              <span class="badge-earned-stamp">Earned</span>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="badge-group ultimate-group">
+      <h3>Ultimate badge</h3>
+      {% if ultimate_badge %}
+        <div class="badge-row">
+          <article class="badge-row-card ultimate-badge-card">
+            {% if ultimate_badge.badge.image %}
+              <img src="{{ ultimate_badge.badge.image.url }}" alt="{{ ultimate_badge.badge.name }}">
+            {% else %}
+              <span class="badge-row-icon" aria-hidden="true">🏆</span>
+            {% endif %}
+            <strong>{{ ultimate_badge.badge.name }}</strong>
+            <small>{{ ultimate_badge.badge.description }}</small>
+            <span class="badge-earned-stamp">Earned</span>
+          </article>
+        </div>
+      {% else %}
+        <p class="badge-empty">Keep collecting to earn the Ultimate Explorer badge.</p>
+      {% endif %}
+      <div class="album-progress-block">
+        <div class="cat-progress-header">
+          <span>Ultimate Explorer progress</span>
+          <small>{{ overall_progress }} / {{ required_total }} experiences</small>
+        </div>
+        <progress class="album-progress" max="{{ required_total }}" value="{{ overall_progress }}" aria-label="Ultimate Explorer progress"></progress>
+      </div>
+    </div>
+
+    <div class="album-progress-block star-progress-block">
+      <div class="cat-progress-header">
+        <span>Next star badge</span>
+        {% if star_progress_complete %}
+          <small>All star badges earned</small>
+        {% else %}
+          <small>{{ star_progress_value }} / {{ star_progress_max }} stars</small>
+        {% endif %}
+      </div>
+      <progress class="album-progress" max="{{ star_progress_max }}" value="{{ star_progress_value }}" aria-label="Star badge progress"></progress>
+    </div>
+
+    {% if not earned_badges %}
+      <p class="badge-empty">No badges earned yet. Keep exploring!</p>
+    {% endif %}
+  </section>
+
+  <section class="panel album-collections">
+    <div class="panel-heading">
+      <h2>My collected experiences</h2>
+      <span>{{ collected_total }} / {{ required_total }} collected</span>
+    </div>
+    <div class="album-progress-block overall-collection-progress">
+      <progress class="album-progress" max="{{ required_total }}" value="{{ overall_progress }}" aria-label="Overall experience collection progress"></progress>
+    </div>
+
+    <div class="category-progress-list">
+      {% for group in category_groups %}
+        <section class="cat-progress-block">
+          <div class="cat-progress-header">
+            <span>{{ group.label }}</span>
+            <small>{{ group.collected_count }} / {{ group.total }} collected</small>
+          </div>
+          {% if group.total %}
+            <progress class="album-progress" max="{{ group.total }}" value="{{ group.collected_count }}" aria-label="{{ group.label }} collection progress"></progress>
+          {% else %}
+            <progress class="album-progress" max="1" value="0" aria-label="{{ group.label }} collection progress"></progress>
+          {% endif %}
+
+          {% if group.experiences %}
+            <div class="album-experience-list">
+              {% for experience in group.experiences %}
+                <div class="album-experience-item">
+                  <strong>{{ experience.title }}</strong>
+                  <span>{{ experience.star_display }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="category-empty">No experiences collected in this category yet.</p>
+          {% endif %}
+        </section>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="album-footer-actions">
+    <a class="secondary-button" href="{% url 'experiences:experiences' %}">Back to Experiences</a>
+  </div>
+{% endblock %}

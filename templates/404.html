@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}404 - Stage Not Found | Burgas Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/404.css' %}">{% endblock %}
+
+{% block content %}
+<section class="hero error-hero">
+  <div class="hero-content">
+    <p class="eyebrow error-eyebrow">Error 404 &middot; Zero Points from the Jury</p>
+
+    <div class="host-callout error-callout">
+      <strong>404</strong>
+      <span>track missing</span>
+    </div>
+
+    <h1 class="error-title">
+      Lost in Burgas?
+    </h1>
+
+    <p class="hero-copy error-copy">
+      The page or stage you are looking for isn't on the official playlist.
+      It might have moved to another venue or never existed at all.
+    </p>
+
+    <div class="hero-actions error-actions">
+      <a class="secondary-button create-passport-button" href="{% url 'home' %}">
+        Back to the Main Stage &rarr;
+      </a>
+      <a class="secondary-button" href="{% url 'experiences:experiences' %}">
+        Explore Experiences &rarr;
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="host-strip error-host-strip">
+  <div>
+    <h2>Don't stop the music</h2>
+    <p>Get back on track with your fan adventure</p>
+  </div>
+  <div class="host-detail">
+    <strong>Check the URL</strong>
+    <span>Make sure the link is right</span>
+  </div>
+  <div class="host-detail">
+    <strong>Explore Burgas</strong>
+    <span>Find iconic places</span>
+  </div>
+  <div class="host-detail">
+    <strong>Earn Badges</strong>
+    <span>Keep collecting stars</span>
+  </div>
+</section>
+{% endblock %}

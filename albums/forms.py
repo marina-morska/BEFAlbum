@@ -30,7 +30,6 @@ class CreateAlbumForm(forms.ModelForm):
             'country': {'required': 'Please, enter your home country!'},
         }
 
-
     def clean_nickname(self):
         nickname = self.cleaned_data.get('nickname', '')
         if nickname and len(nickname.strip()) < 3:
@@ -54,7 +53,6 @@ class EditAlbumForm(CreateAlbumForm):
             **CreateAlbumForm.Meta.help_texts,
             'collected_stars': 'Automatically calculated from your completed experiences.'
         }
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

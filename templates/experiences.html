@@ -1,69 +1,130 @@
-<h1>Experiences</h1>
+{% extends 'base.html' %}
+{% load experience_filters %}
+{% load static %}
 
-<!-- Just for testing: remove this condition when finished -->
-{% if album %}
-    <p>
-        Viewing as fan: <strong>{{ album.nickname }}</strong>
-        ({{ album.country }}) |
-        <a href="{% url 'logout_album' %}">Switch Album</a>
-    </p>
-{% else %}
-    <p>
-        <em>No active album selected.</em>
-        <a href="{% url 'home' %}">Go to Home</a> to create or select one.
-    </p>
-{% endif %}
+{% block title %}Experiences | Burgas Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/experiences.css' %}?v=1">{% endblock %}
 
-{% for experience in experiences %}
-    <h2>{{ experience.title }}</h2>
+{% block content %}
+  <section class="exp-page-hero">
+    <div class="hero-content">
+      <p class="eyebrow">Eurovision 2027 · Burgas</p>
+      {% if album %}
+        <p class="album-test-helper">Viewing as fan: <strong>{{ album.nickname }}</strong> ({{ album.country }}) | <a href="{% url 'logout_album' %}">Switch Album</a></p>
+      {% else %}
+        <p class="album-test-helper">No active album selected. <a href="{% url 'home' %}">Go to Home</a> to create or select one.</p>
+      {% endif %}
+      <h1>Experiences</h1>
+      <p class="hero-copy">Explore the experiences by category, collect your favourites, and keep the memories that make them special.</p>
+      {% if album %}
+        <div class="hero-actions">
+          <a class="secondary-button create-passport-button" href="{% url 'album_details' pk=album.pk %}">Back to my Album →</a>
+          <a class="secondary-button" href="{% url 'experiences:create_personal_experience' %}">+ Personal experience</a>
+        </div>
+      {% else %}
+        <div class="hero-actions">
+          <a class="secondary-button create-passport-button" href="{% url 'create_album' %}">Create your album →</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
 
-    {% if experience.image %}
-        <img src="{{ experience.image.url }}"
-             alt="{{ experience.title }}"
-             style="max-width: 300px; height: auto;">
-    {% endif %}
+  {% if album %}
+    <section class="host-strip" aria-label="Album summary">
+      <div>
+        <h2>{{ album.nickname }}</h2>
+        <p>{{ album.country }}</p>
+      </div>
+      <div class="host-detail">
+        <strong>{{ album.collected_stars }} ⭐</strong>
+        <span>Stars collected</span>
+      </div>
+      <div class="host-detail">
+        <strong>{{ collected_ids|length }}</strong>
+        <span>Experiences</span>
+      </div>
+      <div class="host-detail">
+        <strong>{{ album.memories.count }}</strong>
+        <span>Memories</span>
+      </div>
+    </section>
+  {% endif %}
 
-    <p>{{ experience.description }}</p>
-    <p>{{ experience.star_display }}</p>
-    <p>{{ experience.get_category_display }}</p>
+  {% regroup experiences by get_category_display as category_groups %}
 
-    {% if album %}
-        {% if experience.id in collected_ids %}
-            <p>✅ <em>Collected!</em></p>
+  {% for group in category_groups %}
+    <section class="category-section" aria-labelledby="category-{{ forloop.counter }}">
+      <div class="category-label">
+        <h2 id="category-{{ forloop.counter }}">{{ group.grouper }}</h2>
+      </div>
 
-            {% if experience.id in memories %}
-                {% for memory in album.memories.all %}
-                    {% if memory.experience_id == experience.id %}
-                        <p><strong>My memory:</strong></p>
-                        <p>{{ memory.note }}</p>
-                        <a href="{% url 'memory_details' memory.pk %}">View details</a>
-                        <a href="{% url 'memory_edit' memory.pk %}">Edit memory</a>
-                    {% endif %}
-                {% endfor %}
+      <div class="exp-row">
+        {% for experience in group.list %}
+          <article class="exp-card" id="experience-{{ experience.pk }}">
+            {% if experience.image %}
+              <img class="exp-card-img" src="{{ experience.image.url }}" alt="{{ experience.title }}">
             {% else %}
-                <a href="{% url 'create_memory' experience_pk=experience.pk %}">
-                    Write a memory
-                </a>
+              <div class="exp-card-placeholder" role="img" aria-label="No image available">🎵</div>
             {% endif %}
 
-        {% else %}
-            <form method="post"
-                  action="{% url 'experiences:collect_experience' pk=experience.pk %}">
-                {% csrf_token %}
-                <button type="submit">Collect experience</button>
-            </form>
-        {% endif %}
-    {% endif %}
-{% endfor %}
+            <div class="exp-card-body">
+              <h3 class="exp-card-title">{{ experience.title }}</h3>
+              <p class="exp-card-desc">{{ experience.description|shorten_text }}</p>
+              <p class="exp-card-stars">{{ experience.star_display }}</p>
 
-<p>
-    <a href="{% url 'home' %}">Back to Home</a>
-</p>
-{% if album %}
-    <p>
-        <a href="{% url 'album_details' pk=album.pk %}">
-            Back to my Album
-        </a>
-    </p>
-{% endif %}
+              {% if album %}
+                {% if experience.id in collected_ids %}
+                  <p class="exp-card-status collected"><span class="collected-check">✔</span> Collected</p>
+                {% else %}
+                  {% if not experience.is_personal %}
+                    <form method="post" action="{% url 'experiences:collect_experience' pk=experience.pk %}">
+                      {% csrf_token %}
+                      <button class="btn-collect" type="submit">Collect experience</button>
+                    </form>
+                  {% endif %}
+                {% endif %}
 
+                <details class="exp-memory">
+                  <summary>My memory</summary>
+                  <div class="exp-memory-content">
+                    {% if experience.id in collected_ids %}
+                      {% if experience.id in memories %}
+                        {% for memory in album.memories.all %}
+                          {% if memory.experience_id == experience.id %}
+                            <p>{{ memory.note }}</p>
+                            <div class="memory-links">
+                              <a href="{% url 'memory_details' memory.pk %}">View details</a>
+                              <a href="{% url 'memory_edit' memory.pk %}">Edit memory</a>
+                            </div>
+                          {% endif %}
+                        {% endfor %}
+                      {% else %}
+                        <p>You haven’t added a memory for this experience yet.</p>
+                        <a class="memory-write-link" href="{% url 'create_memory' experience_pk=experience.pk %}">Write a memory</a>
+                      {% endif %}
+                    {% else %}
+                      <p>Collect this experience to add a memory.</p>
+                    {% endif %}
+                  </div>
+                </details>
+              {% else %}
+                <p class="exp-card-status">Not collected</p>
+                <details class="exp-memory">
+                  <summary>My memory</summary>
+                  <div class="exp-memory-content">
+                    <p>Create an album and collect this experience to save a memory.</p>
+                  </div>
+                </details>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% empty %}
+    <section class="panel empty-state">
+      <h2>No experiences yet</h2>
+      <p>Check back soon for more experiences to explore.</p>
+    </section>
+  {% endfor %}
+{% endblock %}

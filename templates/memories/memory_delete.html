@@ -1,11 +1,28 @@
-<h1>Delete my memory</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<p>Are you sure you want to delete the memory "{{ memory.experience.title }}"?</p>
+{% block title %}Delete Memory | Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/memory-pages.css' %}">{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
+{% block content %}
+  <section class="story-hero danger-hero" aria-labelledby="delete-memory-title">
+    <p class="eyebrow">Your album · Memory</p>
+    <h1 id="delete-memory-title">Delete this memory?</h1>
+    <p class="hero-copy">This will remove your note for <strong>{{ memory.experience.title }}</strong>.</p>
+  </section>
 
-    <button type="submit">Yes, delete the memory</button>
-</form>
-
-<a href="{% url 'memory_details' memory.pk %}">Cancel</a>
+  <section class="story-panel confirmation-panel" aria-label="Confirm memory deletion">
+    <div class="confirmation-mark" aria-hidden="true">!</div>
+    <div class="confirmation-copy">
+      <h2>Remove this note from your album?</h2>
+      <p>The collected experience will remain in your album.</p>
+      <div class="story-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button class="danger-button" type="submit">Delete memory</button>
+        </form>
+        <a class="text-link" href="{% url 'memory_details' memory.pk %}">Keep memory</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

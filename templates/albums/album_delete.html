@@ -1,10 +1,28 @@
-<h1>Delete Album</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<p>Are you sure you want to delete the album "{{ album.nickname }}"?</p>
+{% block title %}Delete Album | Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/memory-pages.css' %}">{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete my album</button>
-</form>
+{% block content %}
+  <section class="story-hero danger-hero" aria-labelledby="delete-album-title">
+    <p class="eyebrow">Fan profile</p>
+    <h1 id="delete-album-title">Delete your album?</h1>
+    <p class="hero-copy">This will permanently remove <strong>{{ album.nickname }}</strong> and its saved memories and progress.</p>
+  </section>
 
-<a href="{% url 'album_details' album.pk %}">Cancel</a>
+  <section class="story-panel confirmation-panel" aria-label="Confirm album deletion">
+    <div class="confirmation-mark" aria-hidden="true">!</div>
+    <div class="confirmation-copy">
+      <h2>This action can’t be undone.</h2>
+      <p>Your album and its collected experiences will be deleted.</p>
+      <div class="story-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button class="danger-button" type="submit">Yes, delete my album</button>
+        </form>
+        <a class="text-link" href="{% url 'album_details' album.pk %}">Keep my album</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

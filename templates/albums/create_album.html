@@ -1,9 +1,48 @@
-<h1>Create your Album</h1>
+{% extends 'base.html' %}
 
-<form method="post">
-    {% csrf_token %}
+{% block title %}Create Album | Eurovision Fan Album{% endblock %}
 
-    {{ form }}
+{% block content %}
+    <section class="form-layout" aria-labelledby="create-title">
+        <div class="form-intro">
+            <p class="eyebrow">Your 2027 Adventure</p>
+            <h1 id="create-title">Make your album personal.</h1>
+            <p class="hero-copy">
+                Tell us who you are and where you are cheering from. Your Eurovision Fan Album is ready for its first
+                chapter.
+            </p>
+            <div class="form-note">
+                <strong>Eurovision 2027</strong>
+                <span>Burgas, Bulgaria &middot; Black Sea Coast</span>
+            </div>
+        </div>
 
-    <button type="submit">Create Album</button>
-</form>
+        <form class="passport-form" method="post">
+            {% csrf_token %}
+
+            <div class="form-heading">
+                <span class="form-step">Step 1 of 1</span>
+                <h2>Create your album</h2>
+                <p>These details will appear on your fan profile and badges.</p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                {% include 'partials/form_field.html' with field=field only %}
+            {% endfor %}
+
+            <button class="primary-button form-submit" type="submit">
+                Create Album &rarr;
+            </button>
+
+            <a href="{% url 'home' %}" class="cancel-link">
+                &larr; Cancel and go back to Home
+            </a>
+        </form>
+    </section>
+{% endblock %}

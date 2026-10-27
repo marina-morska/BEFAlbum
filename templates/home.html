@@ -1,38 +1,99 @@
-<h1>Eurovision 2027 Burgas</h1>
+{% extends 'base.html' %}
 
-{% if album %}
-    <h2>Welcome, {{ album.nickname }} from {{ album.country }}!</h2>
-    <p>Your Album is ready!  Stars: {{ album.collected_stars }} ⭐</p>
-    <a href="{% url 'album_details' pk=album.pk %}">View my album</a>
-    <p>
-        <a href="{% url 'experiences:experiences' %}">Explore & collect experiences</a>
-    </p>
-    <p>
-        <a href="{% url 'experiences:create_personal_experience' %}">Create your personal experience</a>
-    </p>
-<!-- just for testing -->
-    <hr>
-    <p>
-        <a href="{% url 'logout_album' %}"> Switch Album / Log Out</a>
-    </p>
-{% else %}
-    <h2>Create your eurovision fan album</h2>
-    <p>Create your Album to start collecting experiences in Burgas!</p>
-    <p>
-        <a href="{% url 'create_album' %}">➕ Create my album</a>
-    </p>
-<!-- Just for testing, delete if statement when not needed-->
-    {% if all_albums %}
-        <hr>
-        <h3>Or select an existing fan album:</h3>
-        <ul>
-            {% for existing in all_albums %}
-                <li>
-                    <strong>{{ existing.nickname }}</strong> ({{ existing.country }}) - {{ existing.collected_stars }}⭐
-                    &nbsp;
-                    <a href="{% url 'select_album' pk=existing.pk %}">[Select this album]</a>
-                </li>
-            {% endfor %}
+{% block title %}Welcome | Burgas Eurovision Fan Album{% endblock %}
+
+{% block content %}
+  <section class="hero" id="overview">
+    <div class="hero-content">
+      <p class="eyebrow">Eurovision 2027 · Burgas, Bulgaria</p>
+      <div class="host-callout">
+        <strong>Burgas</strong>
+        <span>host city</span>
+      </div>
+
+      {% if album %}
+        <h1>Welcome back, {{ album.nickname }}!</h1>
+        <p class="hero-copy">Cheering from {{ album.country }}. You have collected <strong>{{ album.collected_stars }} ⭐</strong> so far!</p>
+        <div class="hero-actions">
+          <a class="secondary-button create-passport-button" href="{% url 'album_details' pk=album.pk %}">
+            View your album &rarr;
+          </a>
+          <a class="secondary-button" href="{% url 'experiences:experiences' %}">
+            Explore experiences &rarr;
+          </a>
+        </div>
+      {% else %}
+        <h1>Create your Eurovision fan album.</h1>
+        <p class="hero-copy">Start your personal journey through Burgas. Create your album once, then collect stars and badges as you visit places and gather experiences.</p>
+        <div class="hero-actions">
+          <a class="secondary-button create-passport-button" href="{% url 'create_album' %}">
+            Create your album &rarr;
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="host-strip" aria-label="Eurovision 2027 host city details">
+    <div>
+      <h2>Burgas is calling</h2>
+      <p>Your Eurovision 2027 home base by the Black Sea</p>
+    </div>
+    <div class="host-detail">
+      <strong>Black Sea coast</strong>
+      <span>Sun, sea and songs</span>
+    </div>
+    <div class="host-detail">
+      <strong>Explore places</strong>
+      <span>Collect city memories</span>
+    </div>
+    <div class="host-detail">
+      <strong>Earn badges</strong>
+      <span>Make it unforgettable</span>
+    </div>
+  </section>
+
+  <section class="panel places" id="explore">
+    <div class="panel-heading">
+      <h2>One Album. Three Steps.</h2>
+      <span>Start here</span>
+    </div>
+    <p class="panel-subtitle">Explore. Collect. Celebrate.</p>
+    <div class="place-grid">
+      <article class="place-card">
+        <span class="place-kicker">01 · Explore</span>
+        <h3>Discover Burgas</h3>
+        <p>Explore Eurovision events, iconic places, culinary experiences and parties.</p>
+      </article>
+      <article class="place-card">
+        <span class="place-kicker">02 · Collect</span>
+        <h3>Earn stars</h3>
+        <p>Turn every visit and fan moment into progress.</p>
+      </article>
+      <article class="place-card">
+        <span class="place-kicker">03 · Celebrate</span>
+        <h3>Unlock badges</h3>
+        <p>Reach milestones and collect badges along your Eurovision journey.</p>
+      </article>
+    </div>
+  </section>
+
+  {% if album or all_albums %}
+    <section class="panel" style="margin-top: 24px; opacity: 0.85;">
+      <small style="color: var(--muted); display: block; margin-bottom: 8px; font-weight: bold;">TESTING HELPERS:</small>
+      {% if album %}
+        <a href="{% url 'logout_album' %}" style="color: var(--muted); font-size: 11.7px;">Switch Album / Log Out</a>
+      {% endif %}
+      {% if all_albums %}
+        <ul style="margin-top: 8px; padding-left: 20px; font-size: 11.7px; color: var(--muted);">
+          {% for existing in all_albums %}
+            <li>
+              {{ existing.nickname }} ({{ existing.country }})
+              <a href="{% url 'select_album' pk=existing.pk %}" style="color: var(--purple);">[Select]</a>
+            </li>
+          {% endfor %}
         </ul>
-    {% endif %}
-{% endif %}
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}

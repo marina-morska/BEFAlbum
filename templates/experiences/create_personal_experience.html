@@ -1,10 +1,39 @@
-<h1>Create a personal experience</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %} 
-    {{ form.as_p }}
-    <button type="submit">Save your experience</button>
-</form>
-<p>
-    <a href="{% url 'experiences:experiences' %}">Back to Experiences</a>
-</p>
+{% block title %}Create Personal Experience | Eurovision Fan Album{% endblock %}
+{% block page_css %}<link rel="stylesheet" href="{% static 'css/personal-experience.css' %}">{% endblock %}
+
+{% block content %}
+  <section class="form-layout personal-experience-layout" aria-labelledby="personal-experience-title">
+    <div class="form-intro personal-experience-intro">
+      <p class="eyebrow">Make it yours</p>
+      <h1 id="personal-experience-title">Add a personal experience.</h1>
+      <p class="hero-copy">Save a special Eurovision or Burgas moment in your album. Your experience will be added to your collection.</p>
+      <div class="form-note">
+        <strong>Your story, your album</strong>
+        <span>Add a title, a few details, and an image if you have one.</span>
+      </div>
+    </div>
+
+    <form class="passport-form personal-experience-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-heading">
+        <span class="form-step">Personal experience</span>
+        <h2>Tell us about it</h2>
+        <p>Give your memory a title and describe what made it special.</p>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      {% for field in form %}
+        {% include 'partials/form_field.html' with field=field only %}
+      {% endfor %}
+
+      <button class="primary-button form-submit" type="submit">Save experience <span aria-hidden="true">→</span></button>
+      <a class="cancel-link" href="{% url 'experiences:experiences' %}">← Back to Experiences</a>
+    </form>
+  </section>
+{% endblock %}

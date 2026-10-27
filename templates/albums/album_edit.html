@@ -1,12 +1,46 @@
-<h1>Edit Your Album</h1>
+{% extends 'base.html' %}
 
-<p>Update your album details below.</p>
+{% block title %}Edit Album | Eurovision Fan Album{% endblock %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+{% block content %}
+    <section class="form-layout" aria-labelledby="edit-title">
+        <div class="form-intro">
+            <p class="eyebrow">Fan Profile</p>
+            <h1 id="edit-title">Update your album.</h1>
+            <p class="hero-copy">
+                Change your nickname or home country. Your collected stars and earned badges remain completely safe!
+            </p>
+            <div class="form-note">
+                <strong>Your Progress</strong>
+                <span>{{ album.collected_stars }} stars collected in Burgas</span>
+            </div>
+        </div>
+        <form class="passport-form" method="post">
+            {% csrf_token %}
 
-    <button type="submit">Save Changes</button>
-</form>
+            <div class="form-heading">
+                <span class="form-step">Settings</span>
+                <h2>Edit your details</h2>
+                <p>Keep your profile up to date for Eurovision 2027.</p>
+            </div>
 
-<a href="{% url 'album_details' album.pk %}">Cancel</a>
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                {% include 'partials/form_field.html' with field=field only %}
+            {% endfor %}
+
+            <button class="primary-button form-submit" type="submit">
+                Save Changes &rarr;
+            </button>
+
+            <a href="{% url 'album_details' album.pk %}" class="cancel-link">
+                &larr; Cancel and go back to Album
+            </a>
+        </form>
+    </section>
+{% endblock %}
